@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Hangman</title>
+    <link href="https://fonts.cdnfonts.com/css/games" rel="stylesheet">
+
+    <style>
+        @import url('https://fonts.cdnfonts.com/css/games');
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+        }
+
+        h1 {
+            color: #9a7d28;
+            text-align: center;
+            margin-top: 100px;
+            font-family: 'Games', sans-serif;
+        }
+
+        h2 {
+            color: #666666;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        form {
+            margin-bottom: 20px;
+        }
+
+        input[type="submit"] {
+            padding: 5px 10px;
+            font-size: 16px;
+            background-color: #333333;
+            color: #ffffff;
+            border: none;
+            cursor: pointer;
+        }
+
+        .word-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .word-letter {
+            display: inline-block;
+            margin: 0 5px;
+            font-size: 24px;
+            font-weight: bold;
+            color: #333333;
+        }
+
+        .message {
+            color: #ff0000;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .win-message {
+            color: #00cc00;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .alphabet-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .letter-button {
+            padding: 10px 15px;
+            margin: 5px;
+            font-size: 16px;
+            background-color: #333333;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .letter-button:hover {
+            background-color: #555555;
+        }
+
+        .letter-button.disabled {
+            background-color: #999999;
+            cursor: not-allowed;
+        }
+
+        .play-again-button {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .play-again-button input[type="submit"] {
+            padding: 10px 20px;
+            font-size: 18px;
+            background-color: #333333;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .play-again-button input[type="submit"]:hover {
+            background-color: #555555;
+        }
+
+        .hangman-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .hangman-part {
+            font-family: monospace;
+            white-space: pre;
+            font-size: 30px;
+            color: #333333;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="hangman-container">
+            <div class="hangman-part">{{.HangmanPart}}</div>
+        </div>
+        <h2>Chances Left: {{.ChancesLeft}}</h2>
+        <div class="alphabet-container">
+            <h2>Guess a letter:</h2>
+            <form action="/guess" method="POST">
+                {{range $i, $letter := .Alphabet}} {{if inSlice $letter $.GuessedLetters}} {{if inSlice $letter $.Letters}}
+                <button class="letter-button disabled" disabled>{{$letter}}</button> {{else}}
+                <button class="letter-button disabled" disabled>{{$letter}}</button> {{end}} {{else}}
+                <button class="letter-button" type="submit" name="guess" value="{{$letter}}">{{$letter}}</button> {{end}} {{end}}
+            </form>
+        </div>
+        <div class="word-container">
+            <h2>Word:</h2>
+            {{range .Letters}} {{if .}}
+            <span class="word-letter">{{.}}</span> {{else}}
+            <span class="word-letter">_</span> {{end}} {{end}}
+        </div>
+        {{if .Win}}
+        <h2 class="win-message">You Win!</h2>
+        {{else if .GameOver}}
+        <h2 class="message">Game Over!</h2>
+        {{end}}
+        <div class="play-again-button">
+            <form action="/play-again" method="POST">
+                <input type="submit" value="Play Again">
+            </form>
+        </div>
+    </div>
+
+</body>
+
+</html>
